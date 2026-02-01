@@ -1,0 +1,940 @@
+/* ==================== VARIABLES & BASE ==================== */
+:root {
+    --sage-50: #f8faf7;
+    --sage-100: #e8ebe3;
+    --sage-200: #d4dac9;
+    --sage-300: #b5c0a5;
+    --sage-400: #95a67f;
+    --sage-500: #788c62;
+    --sage-600: #5d6f4c;
+    --sage-700: #4a5840;
+    --sage-800: #3d4834;
+    --sage-900: #2d3a28;
+    --green-dark: #3d4a3a;
+    --cream: #faf9f6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--cream);
+    color: var(--sage-800);
+    overflow-x: hidden;
+}
+
+/* ==================== FALLING HEARTS ==================== */
+.heart {
+    position: fixed;
+    top: -5%;
+    z-index: 99;
+    pointer-events: none;
+    animation: fall linear forwards;
+    font-size: 14px;
+}
+
+.heart-cover {
+    position: absolute;
+    z-index: 10;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* ==================== COVER SECTION - ENVELOPE DESIGN ==================== */
+#cover-section {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background-color: var(--green-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s ease, visibility 0.8s ease, transform 0.8s ease;
+}
+
+#cover-section.opening .envelope-flap {
+    transform: rotateX(-180deg);
+}
+
+#cover-section.opening .envelope-seal {
+    opacity: 0;
+    transform: translateX(-50%) scale(0);
+}
+
+#cover-section.opening .envelope-body {
+    transform: translateY(-20px);
+}
+
+#cover-section.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+}
+
+/* Envelope Container */
+.envelope-container {
+    position: relative;
+    width: 320px;
+    max-width: 90vw;
+}
+
+/* Envelope Body */
+.envelope-body {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 40px 30px 30px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Envelope Flap (Top) */
+.envelope-flap {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 80px;
+    z-index: 3;
+    transform-origin: top center;
+    transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.envelope-flap-inner {
+    width: 100%;
+    height: 100%;
+    background: var(--sage-700);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    backface-visibility: hidden;
+}
+
+/* Heart seal on flap */
+.envelope-seal {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background: var(--sage-700);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.envelope-seal i {
+    color: white;
+    font-size: 24px;
+}
+
+/* Envelope content */
+.envelope-content {
+    padding-top: 30px;
+}
+
+.envelope-content h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 42px;
+    color: var(--sage-700);
+    margin-bottom: 10px;
+}
+
+.envelope-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+    color: var(--sage-400);
+}
+
+.envelope-divider span {
+    width: 40px;
+    height: 1px;
+    background: var(--sage-300);
+}
+
+.envelope-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--sage-500);
+    margin-bottom: 15px;
+}
+
+.envelope-invite {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--sage-600);
+    margin-bottom: 25px;
+}
+
+/* Open button */
+.open-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--sage-600);
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(93, 111, 76, 0.4);
+}
+
+.open-btn:hover {
+    background: var(--sage-700);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(93, 111, 76, 0.5);
+}
+
+.open-btn i {
+    transition: transform 0.3s ease;
+}
+
+.open-btn:hover i {
+    transform: rotate(10deg);
+}
+
+/* Dots decoration */
+.envelope-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.envelope-dots span {
+    width: 6px;
+    height: 6px;
+    background: var(--sage-300);
+    border-radius: 50%;
+}
+
+/* ==================== MAIN CONTENT ==================== */
+#main-content {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease, visibility 1s ease;
+}
+
+#main-content.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-heart {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-pulse-heart { animation: pulse-heart 1.2s ease-in-out infinite; }
+.animate-shake { animation: shake 0.5s ease-in-out infinite; }
+.animate-fade-in-up { animation: fadeInUp 0.8s ease forwards; }
+.animate-scale-in { animation: scaleIn 0.5s ease forwards; }
+
+/* ==================== PHOTO FRAMES ==================== */
+.photo-frame {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    background: white;
+    padding: 8px;
+}
+
+/* ==================== LEAF DECORATIONS ==================== */
+.leaf-decoration {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* ==================== PARALLAX LEAF BACKGROUND ==================== */
+.parallax-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.parallax-leaf {
+    position: absolute;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+}
+
+/* Lá từ góc trái trên - vươn vào giữa */
+.parallax-leaf.leaf-1 {
+    top: -10%;
+    left: -5%;
+    width: 400px;
+    height: auto;
+    transform-origin: top left;
+}
+
+/* Lá từ góc phải trên - vươn vào giữa */
+.parallax-leaf.leaf-2 {
+    top: -8%;
+    right: -5%;
+    width: 400px;
+    height: auto;
+    transform-origin: top right;
+}
+
+/* Lá từ góc trái dưới - vươn lên giữa */
+.parallax-leaf.leaf-3 {
+    bottom: -5%;
+    left: -15%;
+    width: 400px;
+    height: auto;
+    transform-origin: bottom left;
+}
+
+/* Lá từ góc phải dưới - vươn lên giữa */
+.parallax-leaf.leaf-4 {
+    bottom: -8%;
+    right: -15%;
+    width: 250px;
+    height: auto;
+    transform-origin: bottom right;
+}
+
+/* Lá từ góc trái dưới - vươn lên giữa */
+.parallax-leaf.leaf-5 {
+    top: -12%;
+    left: -10%;
+    width: 400px;
+    height: auto;
+    transform-origin: bottom left;
+}
+
+/* Lá từ góc phải dưới - vươn lên giữa */
+.parallax-leaf.leaf-6 {
+    bottom: 8%;
+    right: -18%;
+    width: 300px;
+    height: auto;
+    transform-origin: bottom right;
+}
+
+/* Responsive adjustments for desktop */
+@media (min-width: 900px) {
+    .parallax-leaf.leaf-1,
+    .parallax-leaf.leaf-2,
+    .parallax-leaf.leaf-3,
+    .parallax-leaf.leaf-4,
+    .parallax-leaf.leaf-5,
+    .parallax-leaf.leaf-6 {
+        width: 700px;
+    }
+    
+    .parallax-leaf.leaf-1 {
+        top: -7%;
+        left: 1%;
+    }
+    
+    .parallax-leaf.leaf-2 {
+        top: -5%;
+        right: 1%;
+    }
+    
+    .parallax-leaf.leaf-3 {
+        bottom: -1%;
+        left: -20%;
+    }
+    
+    .parallax-leaf.leaf-4 {
+        bottom: -5%;
+        right: -20%;
+    }
+    
+    .parallax-leaf.leaf-5 {
+        top: -10%;
+        left: -10%;
+    }
+    
+    .parallax-leaf.leaf-6 {
+        bottom: 10%;
+        right: -22%;
+    }
+}
+
+/* Lá nổi ở giữa */
+.parallax-leaf.leaf-7 {
+    top: -10%;
+    left: -10%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: auto;
+}
+
+
+/* Lá từ góc trái dưới - vươn lên giữa */
+.parallax-leaf.leaf-8 {
+    bottom: -10%;
+    left: -10%;
+    width: 400px;
+    height: auto;
+    transform-origin: bottom left;
+}
+
+/* Lá từ góc phải dưới - vươn lên giữa */
+.parallax-leaf.leaf-9 {
+    bottom: -70%;
+    right: -15%;
+    width: 400px;
+    height: auto;
+    transform-origin: bottom right;
+}
+
+/* ==================== AUTO SCROLL INDICATOR ==================== */
+.scroll-indicator {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--sage-500);
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 90;
+    pointer-events: none;
+}
+
+.scroll-indicator.visible {
+    opacity: 1;
+}
+
+.scroll-indicator .mouse {
+    width: 24px;
+    height: 40px;
+    border: 2px solid var(--sage-400);
+    border-radius: 12px;
+    position: relative;
+}
+
+.scroll-indicator .mouse::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 8px;
+    background: var(--sage-400);
+    border-radius: 2px;
+    animation: scrollWheel 1.5s ease-in-out infinite;
+}
+
+@keyframes scrollWheel {
+    0%, 100% { opacity: 1; top: 8px; }
+    50% { opacity: 0.5; top: 18px; }
+}
+
+/* ==================== RED ENVELOPE (GIFT) ==================== */
+.red-envelope {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(185, 28, 28, 0.4);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.red-envelope:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 12px 40px rgba(185, 28, 28, 0.5);
+}
+
+/* Coin decoration */
+.coin {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    border-radius: 50%;
+    border: 2px solid #fcd34d;
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+}
+
+/* ==================== GIFT MODAL ==================== */
+#gift-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#gift-modal.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.5s ease;
+}
+
+.modal-content {
+    position: relative;
+    z-index: 10;
+    background: white;
+    border-radius: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+    transform: scale(0.8) translateY(50px);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+}
+
+#gift-modal.visible .modal-content {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--sage-600), var(--sage-700));
+    color: white;
+    padding: 24px;
+    border-radius: 24px 24px 0 0;
+    text-align: center;
+}
+
+.modal-header h3 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 36px;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    background: rgba(255,255,255,0.3);
+    transform: rotate(90deg);
+}
+
+/* QR Card */
+.qr-card {
+    text-align: center;
+    padding: 16px;
+}
+
+.qr-card img {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 12px;
+    border-radius: 12px;
+    background: #f5f5f5;
+    padding: 8px;
+}
+
+/* QR Section (for single QR display) */
+.qr-section {
+    text-align: center;
+}
+
+.qr-section.hidden {
+    display: none;
+}
+
+.qr-card-single {
+    text-align: center;
+    padding: 16px;
+}
+
+.qr-card-single img {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 16px;
+    background: #f5f5f5;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* ==================== PHOTO LIGHTBOX ==================== */
+.photo-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.photo-lightbox.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.lightbox-counter {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 16px;
+    border-radius: 20px;
+    z-index: 10;
+}
+
+.lightbox-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    padding: 70px 60px 100px;
+    gap: 10px;
+    position: relative;
+}
+
+.lightbox-image-container {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    animation: lightboxImageIn 0.3s ease;
+}
+
+@keyframes lightboxImageIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lightbox-nav {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+}
+
+.lightbox-nav.lightbox-prev {
+    left: 15px;
+}
+
+.lightbox-nav.lightbox-next {
+    right: 15px;
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-thumbnails {
+    display: flex;
+    gap: 10px;
+    padding: 15px 20px;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.3) transparent;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    background: linear-gradient(transparent, rgba(0,0,0,0.5));
+}
+
+.lightbox-thumbnails::-webkit-scrollbar {
+    height: 6px;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
+}
+
+.thumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+}
+
+.thumbnail:hover {
+    opacity: 0.8;
+}
+
+.thumbnail.active {
+    opacity: 1;
+    border-color: white;
+    transform: scale(1.1);
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Mobile responsive for lightbox */
+@media (max-width: 768px) {
+    .lightbox-main {
+        padding: 70px 50px 90px;
+    }
+    
+    .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .lightbox-nav.lightbox-prev {
+        left: 5px;
+    }
+    
+    .lightbox-nav.lightbox-next {
+        right: 5px;
+    }
+    
+    .lightbox-image-container {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .lightbox-counter {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+    
+    .lightbox-thumbnails {
+        padding: 10px 15px;
+    }
+}
+
+/* ==================== MUSIC BUTTON ==================== */
+#music-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 50px;
+    height: 50px;
+    background: var(--sage-600);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(93, 111, 76, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#music-btn:hover {
+    background: var(--sage-700);
+    transform: scale(1.1);
+}
+
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--sage-400);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--sage-500);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 640px) {
+    .envelope-container {
+        width: 280px;
+    }
+    
+    .envelope-content h1 {
+        font-size: 36px;
+    }
+    
+    .envelope-body {
+        padding: 35px 25px 25px;
+    }
+}
