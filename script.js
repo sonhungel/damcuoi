@@ -24,7 +24,7 @@ const lightboxPrev = document.getElementById('lightbox-prev');
 const lightboxNext = document.getElementById('lightbox-next');
 
 // ==================== FALLING HEARTS ====================
-const heartSymbols = ['❤', '💕', '💗', '💖', '♥', '🩷'];
+const heartSymbols = ['💗'];
 const heartColors = ['#e74c3c', '#ff6b6b', '#ec407a', '#f06292', '#d32f2f', '#e91e63'];
 
 function createHeart(container, isForCover = false) {
@@ -53,21 +53,39 @@ function createHeart(container, isForCover = false) {
 // Start hearts on cover
 let coverHeartsInterval;
 function startCoverHearts() {
-    // Create initial hearts
-    for (let i = 0; i < 8; i++) {
+    // Create initial hearts (reduced from 8 to 5)
+    for (let i = 0; i < 5; i++) {
         setTimeout(() => createHeart(coverHeartsContainer, true), i * 300);
     }
-    // Continue creating hearts
-    coverHeartsInterval = setInterval(() => createHeart(coverHeartsContainer, true), 600);
+    // Continue creating hearts (increased interval from 600 to 800)
+    coverHeartsInterval = setInterval(() => createHeart(coverHeartsContainer, true), 800);
+    
+    // Stop after 5 seconds
+    setTimeout(() => {
+        if (coverHeartsInterval) {
+            clearInterval(coverHeartsInterval);
+            coverHeartsInterval = null;
+        }
+    }, 5000);
 }
 
 // Start hearts on main content
 let mainHeartsInterval;
 function startMainHearts() {
-    for (let i = 0; i < 10; i++) {
+    // Reduced from 10 to 6 hearts
+    for (let i = 0; i < 6; i++) {
         setTimeout(() => createHeart(heartsContainer, false), i * 200);
     }
-    mainHeartsInterval = setInterval(() => createHeart(heartsContainer, false), 500);
+    // Increased interval from 500 to 700
+    mainHeartsInterval = setInterval(() => createHeart(heartsContainer, false), 700);
+    
+    // Stop after 5 seconds
+    setTimeout(() => {
+        if (mainHeartsInterval) {
+            clearInterval(mainHeartsInterval);
+            mainHeartsInterval = null;
+        }
+    }, 5000);
 }
 
 // Stop cover hearts
@@ -216,22 +234,78 @@ document.addEventListener('keydown', (e) => {
 // ==================== PHOTO LIGHTBOX ====================
 // Album images array - you can add more images here
 const albumImages = [
-    'https://images.unsplash.com/photo-1519741497674-611481863552?w=800',
-    'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800',
-    'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800',
-    'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800',
-    'https://images.unsplash.com/photo-1519741497674-611481863552?w=800',
-    'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800',
-    'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800',
-    'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800',
-    'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800',
-    'https://images.unsplash.com/photo-1544078751-58fee2d8a03b?w=800'
+    '/album/A1.jpg',
+    '/album/A2.jpg',
+    '/album/A3.jpg',
+    '/album/A4.jpg',
+    '/album/A5.jpg',
+    '/album/A6.jpg',
+    '/album/A7.jpg',
+    '/album/A8.jpg',
+    '/album/A9.jpg',
+    '/album/A10.jpg',
+    '/album/A11.jpg',
+    '/album/A12.jpg',
+    '/album/A13.jpg',
+    '/album/A14.jpg',
+    '/album/A15.jpg',
+    '/album/A16.jpg',
+    '/album/A17.jpg',
+    '/album/A18.jpg',
+    '/album/A19.jpg',
+    '/album/A20.jpg',
+];
+
+const thumbnailImages = [
+    '/thumbnail/A1.jpg',
+    '/thumbnail/A2.jpg',
+    '/thumbnail/A3.jpg',
+    '/thumbnail/A4.jpg',
+    '/thumbnail/A5.jpg',
+    '/thumbnail/A6.jpg',
+    '/thumbnail/A7.jpg',
+    '/thumbnail/A8.jpg',
+    '/thumbnail/A9.jpg',
+    '/thumbnail/A10.jpg',
+    '/thumbnail/A11.jpg',
+    '/thumbnail/A12.jpg',
+    '/thumbnail/A13.jpg',
+    '/thumbnail/A14.jpg',
+    '/thumbnail/A15.jpg',
+    '/thumbnail/A16.jpg',
+    '/thumbnail/A17.jpg',
+    '/thumbnail/A18.jpg',
+    '/thumbnail/A19.jpg',
+    '/thumbnail/A20.jpg',
 ];
 
 let currentImageIndex = 0;
+let preloadedImages = {};
+
+// Preload images for better performance
+function preloadImage(src) {
+    if (!preloadedImages[src]) {
+        const img = new Image();
+        img.src = src;
+        preloadedImages[src] = img;
+    }
+    return preloadedImages[src];
+}
+
+// Preload adjacent images for smooth navigation
+function preloadAdjacentImages(index) {
+    const nextIndex = (index + 1) % albumImages.length;
+    const prevIndex = (index - 1 + albumImages.length) % albumImages.length;
+    
+    // Preload current, next, and previous images
+    preloadImage(albumImages[index]);
+    preloadImage(albumImages[nextIndex]);
+    preloadImage(albumImages[prevIndex]);
+}
 
 function openLightbox(index) {
     currentImageIndex = index;
+    preloadAdjacentImages(index);
     updateLightbox();
     generateThumbnails();
     photoLightbox.classList.add('visible');
@@ -264,27 +338,44 @@ function updateLightbox() {
     }
 }
 
+// Generate thumbnails in chunks to avoid blocking
 function generateThumbnails() {
     lightboxThumbnails.innerHTML = '';
-    albumImages.forEach((src, index) => {
+    
+    // Create fragment for batch DOM insertion
+    const fragment = document.createDocumentFragment();
+    
+    thumbnailImages.forEach((src, index) => {
         const thumb = document.createElement('div');
         thumb.className = `thumbnail ${index === currentImageIndex ? 'active' : ''}`;
-        thumb.innerHTML = `<img src="${src.replace('w=800', 'w=100')}" alt="Thumbnail ${index + 1}">`;
+        
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `Thumbnail ${index + 1}`;
+        img.loading = 'lazy';
+        
+        thumb.appendChild(img);
         thumb.addEventListener('click', () => {
             currentImageIndex = index;
             updateLightbox();
-        });
-        lightboxThumbnails.appendChild(thumb);
+        }, { passive: true });
+        
+        fragment.appendChild(thumb);
     });
+    
+    // Single DOM insertion
+    lightboxThumbnails.appendChild(fragment);
 }
 
 function nextImage() {
     currentImageIndex = (currentImageIndex + 1) % albumImages.length;
+    preloadAdjacentImages(currentImageIndex);
     updateLightbox();
 }
 
 function prevImage() {
     currentImageIndex = (currentImageIndex - 1 + albumImages.length) % albumImages.length;
+    preloadAdjacentImages(currentImageIndex);
     updateLightbox();
 }
 
@@ -325,95 +416,55 @@ document.addEventListener('DOMContentLoaded', () => {
     startCoverHearts();
 });
 
-// ==================== SCROLL ANIMATIONS ====================
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
+// ==================== PARALLAX EFFECT FOR LEAVES ====================
+let ticking = false;
+let lastScrollY = 0;
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-up');
+function updateParallax() {
+    const parallaxLeaves = document.querySelectorAll('.parallax-leaf');
+    const scrollY = lastScrollY;
+    
+    parallaxLeaves.forEach((leaf, index) => {
+        // Different speed for each leaf
+        const speed = 0.08 + (index * 0.025);
+        const direction = index % 2 === 0 ? 1 : -1;
+        const yOffset = scrollY * speed * direction;
+        const xOffset = scrollY * speed * 0.4 * direction;
+        const rotation = scrollY * 0.03 * direction;
+        
+        // Special handling for leaf-5 (center leaf)
+        if (leaf.classList.contains('leaf-5')) {
+            leaf.style.transform = `translate(calc(-50% + ${xOffset}px), calc(-50% + ${yOffset}px)) rotate(${rotation}deg)`;
+        } else {
+            leaf.style.transform = `translate(${xOffset}px, ${yOffset}px) rotate(${rotation}deg)`;
         }
     });
-}, observerOptions);
-
-// Observe sections for animation
-document.querySelectorAll('section').forEach(section => {
-    observer.observe(section);
-});
-
-// ==================== PARALLAX EFFECT FOR LEAVES ====================
-function initParallax() {
-    const parallaxLeaves = document.querySelectorAll('.parallax-leaf');
     
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        
-        parallaxLeaves.forEach((leaf, index) => {
-            // Get original position
-            const rect = leaf.getBoundingClientRect();
-            const leafTop = rect.top + scrollY;
-            
-            // Different speed for each leaf
-            const speed = 0.08 + (index * 0.025);
-            const direction = index % 2 === 0 ? 1 : -1;
-            const yOffset = scrollY * speed * direction;
-            const xOffset = scrollY * speed * 0.4 * direction;
-            const rotation = scrollY * 0.03 * direction;
-            
-            // Special handling for leaf-5 (center leaf)
-            if (leaf.classList.contains('leaf-5')) {
-                leaf.style.transform = `translate(calc(-50% + ${xOffset}px), calc(-50% + ${yOffset}px)) rotate(${rotation}deg)`;
-            } else {
-                leaf.style.transform = `translate(${xOffset}px, ${yOffset}px) rotate(${rotation}deg)`;
-            }
-        });
-    });
+    ticking = false;
 }
 
-// ==================== SMOOTH AUTO SCROLL ====================
-const SCROLL_DURATION = 35000; // 35 seconds
-let scrollAnimationId;
-
-function startSmoothScroll() {
-    const startPosition = 0;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const startTime = performance.now();
-    
-    function animateScroll(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / SCROLL_DURATION, 1);
+function initParallax() {
+    window.addEventListener('scroll', () => {
+        lastScrollY = window.scrollY;
         
-        // Linear scroll - constant velocity, no easing
-        const currentPosition = startPosition + (maxScroll * progress);
-        
-        window.scrollTo(0, currentPosition);
-        
-        if (progress < 1) {
-            scrollAnimationId = requestAnimationFrame(animateScroll);
+        if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
         }
-    }
-    
-    scrollAnimationId = requestAnimationFrame(animateScroll);
-    
-    // Stop auto-scroll on user interaction
-    ['wheel', 'touchstart', 'keydown'].forEach(event => {
-        window.addEventListener(event, () => {
-            if (scrollAnimationId) {
-                cancelAnimationFrame(scrollAnimationId);
-                scrollAnimationId = null;
-            }
-        }, { once: true, passive: true });
-    });
+    }, { passive: true });
 }
 
 // ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // Start cover hearts immediately
-    startCoverHearts();
-    
     // Initialize parallax effect
     initParallax();
+    
+    // Defer hearts animation until after page is interactive
+    if (document.readyState === 'complete') {
+        setTimeout(startCoverHearts, 100);
+    } else {
+        window.addEventListener('load', () => {
+            setTimeout(startCoverHearts, 100);
+        }, { once: true });
+    }
 });
