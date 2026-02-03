@@ -344,7 +344,7 @@ function generateThumbnails() {
     
     // Create fragment for batch DOM insertion
     const fragment = document.createDocumentFragment();
-    
+
     thumbnailImages.forEach((src, index) => {
         const thumb = document.createElement('div');
         thumb.className = `thumbnail ${index === currentImageIndex ? 'active' : ''}`;
